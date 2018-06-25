@@ -5,9 +5,6 @@ jobs:
       - image: circleci/golang:1.10
     steps:
       - checkout
-      - run: export
-      - run: pwd
-      - run: ls -alR
       - run:
           name: Build for all Linux architectures
           command: |
@@ -59,11 +56,6 @@ jobs:
             rm -rf runit-conf_amd64
 
             cd ..
-
-            ls -al bin
-      - run: export
-      - run: pwd
-      - run: ls -alR
       - store_artifacts:
           path: bin
       - persist_to_workspace:
@@ -74,12 +66,9 @@ jobs:
     docker:
       - image: circleci/golang:1.10
     steps:
-      - run: export
-      - run: pwd
-      - run: ls -alR
+      - checkout
       - attach_workspace:
           at: .
-      - run: ls -alR
       - run:
           name: Setup ghr
           command: |
