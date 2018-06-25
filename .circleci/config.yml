@@ -17,10 +17,8 @@ jobs:
 
             # create binary and template directories
             rm -rf bin
-            mkdir bin
-            cd bin
-            mkdir tmpl
-            cd tmpl
+            mkdir -p bin/tmpl
+            cd bin/tmpl
             cp ../../src/runit-conf/runit-bootstrap.sh runit-bootstrap
             chmod 0755 runit-bootstrap
             cd ..
