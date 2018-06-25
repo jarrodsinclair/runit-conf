@@ -67,9 +67,9 @@ jobs:
       - store_artifacts:
           path: bin
       - persist_to_workspace:
-        root: bin
-        paths:
-          - *.tgz
+          root: .
+          paths:
+            - bin
   release-to-github:
     docker:
       - image: circleci/golang:1.10
