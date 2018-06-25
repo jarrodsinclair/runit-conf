@@ -92,7 +92,10 @@ workflows:
   version: 2
   build-and-release:
     jobs:
-      - build-all-arch
+      - build-all-arch:
+          filters:
+            branches:
+              only: master
       - release-to-github:
           requires:
             - build-all-arch
