@@ -81,15 +81,13 @@ workflows:
     jobs:
       - build-all-arch:
           filters:
-            branches:
-              only: master
             tags:
               only: /.*/
       - release-to-github:
           requires:
             - build-all-arch
           filters:
-            branches:
-              only: master
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
