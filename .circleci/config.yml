@@ -58,3 +58,5 @@ jobs:
             cd ..
 
             ls -al bin
+      - store_artifacts:
+          path: bin
