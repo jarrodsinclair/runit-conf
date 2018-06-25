@@ -1,17 +1,13 @@
 version: 2
 jobs:
-  build:
+  build-all-arch:
     docker:
       - image: circleci/golang:1.10
     steps:
       - checkout
       - run: export
-      - run:
-          name: Setup ghr
-          command: |
-            sudo wget -q https://github.com/tcnksm/ghr/releases/download/v0.10.0/ghr_v0.10.0_linux_amd64.tar.gz
-            sudo tar xzf ghr_v0.10.0_linux_amd64.tar.gz --strip-components=1 -C /usr/local/bin ghr_v0.10.0_linux_amd64/ghr
-            sudo rm -rf ghr_v0.10.0_linux_amd64.tar.gz
+      - run: pwd
+      - run: ls -alR
       - run:
           name: Build for all Linux architectures
           command: |
@@ -65,5 +61,39 @@ jobs:
             cd ..
 
             ls -al bin
+      - run: export
+      - run: pwd
+      - run: ls -alR
       - store_artifacts:
           path: bin
+
+  release-to-github:
+    docker:
+      - image: circleci/golang:1.10
+    steps:
+      - run: export
+      - run: pwd
+      - run: ls -alR
+      - run:
+          name: Setup ghr
+          command: |
+            sudo wget -q https://github.com/tcnksm/ghr/releases/download/v0.10.0/ghr_v0.10.0_linux_amd64.tar.gz
+            sudo tar xzf ghr_v0.10.0_linux_amd64.tar.gz --strip-components=1 -C /usr/local/bin ghr_v0.10.0_linux_amd64/ghr
+            sudo rm -rf ghr_v0.10.0_linux_amd64.tar.gz
+
+workflows:
+  version: 2
+  build-and-release:
+    jobs:
+      - build-all-arch:
+          #filters:
+          #  tags:
+          #    only: /.*/
+      - release-to-github:
+          requires:
+            - build-all-arch
+          #filters:
+          #  tags:
+          #    only: /^v.*/
+          #  branches:
+          #    ignore: /.*/
