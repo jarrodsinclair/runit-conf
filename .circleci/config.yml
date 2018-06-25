@@ -41,12 +41,12 @@ jobs:
             cd runit-conf_amd64; GOOS=linux GOARCH=amd64 go build ../../src/runit-conf; cd ..
 
             # create tarballs
+            # TODO: --owner=0 --group=0
             tar zcvf runit-conf_arm5.tar.gz runit-conf_arm5
             tar zcvf runit-conf_arm6.tar.gz runit-conf_arm6
             tar zcvf runit-conf_arm7.tar.gz runit-conf_arm7
             tar zcvf runit-conf_arm64.tar.gz runit-conf_arm64
             tar zcvf runit-conf_amd64.tar.gz runit-conf_amd64
-            # --owner=0 --group=0
 
             # clean up
             rm -rf runit-conf_arm5
@@ -56,3 +56,5 @@ jobs:
             rm -rf runit-conf_amd64
 
             cd ..
+
+            ls -al bin
