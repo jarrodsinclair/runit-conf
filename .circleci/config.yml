@@ -78,7 +78,7 @@ jobs:
       - run: pwd
       - run: ls -alR
       - attach_workspace:
-          at: bin
+          at: .
       - run: ls -alR
       - run:
           name: Setup ghr
