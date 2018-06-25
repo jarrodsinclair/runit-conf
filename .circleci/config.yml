@@ -6,6 +6,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup ghr
+          command: |
+            sudo wget -q https://github.com/tcnksm/ghr/releases/download/v0.10.0/ghr_v0.10.0_linux_amd64.tar.gz
+            sudo tar xzf -C /usr/local/bin
+            ls -al
+            ls -al /usr/local/bin
+            ghr
+      - run:
           name: Build for all Linux architectures
           command: |
             # setup go builder and dependencies
