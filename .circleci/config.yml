@@ -5,61 +5,13 @@ jobs:
       - image: circleci/golang:1.10
     steps:
       - checkout
-      - run:
-          name: Build for all Linux architectures
-          command: |
-            # setup go builder and dependencies
-            export GOPATH="$PWD"
-            cd src/runit-conf
-            rm -rf vendor Gopkg.lock
-            dep ensure
-            cd ../..
-
-            # create binary and template directories
-            rm -rf bin
-            mkdir -p bin/tmpl
-            cd bin/tmpl
-            cp ../../src/runit-conf/runit-bootstrap.sh runit-bootstrap
-            chmod 0755 runit-bootstrap
-            cd ..
-
-            # initialise each arch directory
-            cp -r tmpl runit-conf_arm5
-            cp -r tmpl runit-conf_arm6
-            cp -r tmpl runit-conf_arm7
-            cp -r tmpl runit-conf_arm64
-            cp -r tmpl runit-conf_amd64
-            rm -rf tmpl
-
-            # build for each arch
-            cd runit-conf_arm5; GOOS=linux GOARCH=arm GOARM=5 go build ../../src/runit-conf; cd ..
-            cd runit-conf_arm6; GOOS=linux GOARCH=arm GOARM=6 go build ../../src/runit-conf; cd ..
-            cd runit-conf_arm7; GOOS=linux GOARCH=arm GOARM=7 go build ../../src/runit-conf; cd ..
-            cd runit-conf_arm64; GOOS=linux GOARCH=arm64 go build ../../src/runit-conf; cd ..
-            cd runit-conf_amd64; GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ../../src/runit-conf; cd ..
-
-            # create tarballs
-            # TODO: --owner=0 --group=0
-            tar zcvf runit-conf_arm5.tar.gz runit-conf_arm5
-            tar zcvf runit-conf_arm6.tar.gz runit-conf_arm6
-            tar zcvf runit-conf_arm7.tar.gz runit-conf_arm7
-            tar zcvf runit-conf_arm64.tar.gz runit-conf_arm64
-            tar zcvf runit-conf_amd64.tar.gz runit-conf_amd64
-
-            # clean up
-            rm -rf runit-conf_arm5
-            rm -rf runit-conf_arm6
-            rm -rf runit-conf_arm7
-            rm -rf runit-conf_arm64
-            rm -rf runit-conf_amd64
-
-            cd ..
+      - run: make
       - store_artifacts:
-          path: bin
+          path: out
       - persist_to_workspace:
           root: .
           paths:
-            - bin
+            - out
   release-to-github:
     docker:
       - image: circleci/golang:1.10
@@ -73,7 +25,7 @@ jobs:
             sudo wget -q https://github.com/tcnksm/ghr/releases/download/v0.10.0/ghr_v0.10.0_linux_amd64.tar.gz
             sudo tar xzf ghr_v0.10.0_linux_amd64.tar.gz --strip-components=1 -C /usr/local/bin ghr_v0.10.0_linux_amd64/ghr
             sudo rm -rf ghr_v0.10.0_linux_amd64.tar.gz
-      - run: ghr ${CIRCLE_TAG} bin/
+      - run: ghr ${CIRCLE_TAG} out/
 
 workflows:
   version: 2
